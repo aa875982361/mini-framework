@@ -1,0 +1,18 @@
+{
+  "name": "mini-framework",
+  "version": "1.0.0",
+  "description": "实现一套小程序运行框架,可以跑小程序代码",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "npx webpack"
+  },
+  "keywords": [
+    "小程序"
+  ],
+  "author": "plinghuang",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0"
+  }
+}
