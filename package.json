@@ -4,6 +4,8 @@
   "description": "实现一套小程序运行框架,可以跑小程序代码",
   "main": "src/index.js",
   "scripts": {
+    "server": "http-server -p 8090 ./dist",
+    "watch": "npx webpack watch",
     "build": "npx webpack"
   },
   "keywords": [
@@ -12,6 +14,9 @@
   "author": "plinghuang",
   "license": "ISC",
   "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4",
     "webpack": "^5.58.2",
     "webpack-cli": "^4.9.0"
   }
