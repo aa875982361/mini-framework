@@ -1,6 +1,5 @@
 const path = require("path")
 const CopyPlugin = require("copy-webpack-plugin");
-const eslintFriendlyFormatter = require('eslint-friendly-formatter')
 
 module.exports = {
   mode: "development",
@@ -30,6 +29,14 @@ module.exports = {
       ],
     }),
   ],
+  devServer: {
+    hot: true, // 热更新
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    }, // 静态文件目录
+    port: 8090,
+    historyApiFallback: true, // 找不到的都可替换为index.html
+  },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
