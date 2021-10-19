@@ -30,9 +30,10 @@ function sendMessage(id: string, data: any): void{
         const oldOnload = childWindow?.onload
         childWindow && (childWindow.onload = function(event: Event): void{
             oldOnload?.call(this, event)
+            console.log("iframe 初始化完成 传入通信数据");
             (childWindow as any)[childWindowOnMessageName](data)
         })
-        console.error("iframe 没有初始化完成，需要初始化完成才能通信， id:", id)
+        console.info("iframe 没有初始化完成，等待初始化完成才通信， id:", id)
     }
 }
 /**

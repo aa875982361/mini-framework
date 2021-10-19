@@ -1,5 +1,6 @@
 const path = require("path")
 const CopyPlugin = require("copy-webpack-plugin");
+const eslintFriendlyFormatter = require('eslint-friendly-formatter')
 
 module.exports = {
   mode: "development",
@@ -14,11 +15,13 @@ module.exports = {
     filename: "[name].js"
   },
   module: {
-    rules: [{
-      test: /\.tsx?$/,
-      use: 'ts-loader',
-      exclude: /node_modules/
-    }]
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      },
+    ]
   },
   plugins: [
     new CopyPlugin({
