@@ -1,6 +1,9 @@
 /**
  * 渲染层
  */
+ const KBoneUI = require('kbone-ui/wx-components') // 只引入内置组件
+
+ KBoneUI.register()
 interface VDom {
     uid?: number,
     type?: string,
