@@ -40,16 +40,16 @@ function sendMessage(id: string, data: any): void{
  * 传递数据给渲染层
  * @param data 数据
  */
-function sendMessageToRender(data: any){
+function logicSendMessageToRender(data: any){
     sendMessage("render", data)
 }
 /**
  * 传递数据给逻辑层
  * @param data 数据
  */
-function sendMessageToLogic(data: any){
+function renderSendMessageToLogic(data: any){
     sendMessage("logic", data)
 }
 
-window.sendMessageToRender = sendMessageToRender
-window.sendMessageToLogic = sendMessageToLogic
+window.logicSendMessageToRender = logicSendMessageToRender
+window.renderSendMessageToLogic = renderSendMessageToLogic
