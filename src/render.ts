@@ -1,39 +1,40 @@
 /**
  * 渲染层
  */
-import Vue, { VNode } from "vue"
-const KboneUI = require("./render/kbone-ui")
-
-console.log("渲染层逻辑")
-// 子窗口的函数名
-const renderAcceptMessageName = "onMyMessage";
-(window as any)[renderAcceptMessageName] = function(data: any){
-    console.log("渲染层接收到数据", data);
+interface VDom {
+    uid?: number,
+    type?: string,
+    tagName?: string,
+    attributes?: Attribute[],
+    children?: VDom[],
+    content?: string,
+    dataSet?: object
 }
 
-setTimeout(() => {
-    /** 发送信息给逻辑层的方法名 */
-    const sendMessageToLogicName = "sendMessageToLogic"
-    parent.window[sendMessageToLogicName]("我是渲染层的数据")
-}, 100);
+interface Attribute {
+    key: string,
+    value: string | boolean
+}
 
-console.log("KboneUI", KboneUI)
-// 引入weui组件
-Vue.use(KboneUI)
-console.log("初始化vue节点", (Vue as any)?.options?.components);
-
-var app3 = new Vue({
-    el: '#app',
-    data: {
-        seen: true
-    },
-    render: function(creatElememt, hook): VNode{
-        return creatElememt("k-button",undefined, ["666"])
-    },
-    mounted: function(){
-        console.log("mounted");
+console.log("渲染层逻辑")
+/**
+ *  通信层发送数据方法名
+ */
+ const sendMessageToLoficName = "renderSendMessageToLogic"
+ /**
+  * 发送数据到渲染层
+  * @param data 数据
+  */
+ function sendMessageToLogic(data: any){
+     /** 发送信息给渲染层的方法名 */
+     parent.window[sendMessageToLoficName](data)
+ }
+// 子窗口接收数据
+const renderAcceptMessageName = "onMyMessage";
+/** 渲染层接收到外部传入的数据，根据传入数据渲染页面 */
+(window as any)[renderAcceptMessageName] = function(data: any){
+    console.log("渲染层接收到数据", data);
+    if(data?.vdoms){
+        
     }
-})
-
-
-
+}
