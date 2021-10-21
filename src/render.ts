@@ -1,9 +1,10 @@
 /**
  * 渲染层
  */
- const KBoneUI = require('kbone-ui/wx-components') // 只引入内置组件
+const KBoneUI = require('kbone-ui') // 只引入内置组件
 
- KBoneUI.register()
+KBoneUI.default.register()
+ 
 interface VDom {
     uid?: number,
     type?: string,
@@ -38,6 +39,66 @@ const renderAcceptMessageName = "onMyMessage";
 (window as any)[renderAcceptMessageName] = function(data: any){
     console.log("渲染层接收到数据", data);
     if(data?.vdoms){
+        const vdoms: VDom[] = data.vdoms
+        const documentFrame = document.createDocumentFragment()
+        vdoms.map(vdom => {
+            const realDom = renderVdom(vdom)
+            if(realDom){
+                documentFrame.appendChild(realDom)
+            }
+        })
+        console.log("渲染页面", documentFrame);
         
+        document.getElementById("app")?.append(documentFrame)
     }
+}
+
+function renderVdoms(vdoms: VDom[] = []): DocumentFragment{
+    const fragement = document.createDocumentFragment()
+    vdoms.map(vdom => {
+        const realDom = renderVdom(vdom)
+        if(realDom){
+            fragement.appendChild(realDom)
+        }
+    })
+    return fragement
+}
+
+function renderVdom(vdom: VDom): Element | Text | undefined{
+    const {tagName = "", attributes = [], content, children = [], uid} = vdom
+    if(!tagName && typeof content === "undefined"){
+        return
+    }
+    if(!tagName){
+        return document.createTextNode(content as string)
+    }
+    let realTagName = "wx-" + tagName
+    if(tagName === "text"){
+        realTagName = "span"
+    }
+    const realDom = document.createElement(realTagName)
+    realDom.id = uid + ""
+    attributes.map((attribute: Attribute) => {
+        if(attribute.key.indexOf("bind") === 0){
+            const eventName = attribute.key.replace(/bind:?/, "")
+            console.log("addEventListener", eventName);
+            realDom.addEventListener(eventName, function(event){
+                console.log("event", eventName, event);
+                sendMessageToLogic({
+                    pageId: "1",
+                    eventName: attribute.value,
+                    event
+                })
+            })
+        }else{
+            realDom.setAttribute(attribute.key, attribute.value + "")
+        }
+    })
+    // 处理子节点
+    if(children && children.length > 0){
+        const childFragement = renderVdoms(children)
+        realDom.appendChild(childFragement)
+    }
+    
+    return realDom
 }
