@@ -254,33 +254,51 @@ window.Page = function Page(pageObj: any) {
     console.log("page", pageObj);
     pageObj.id = pageObjId
     currentPageObjId = pageObjId
-    pageObjMap[pageObjId] = pageObjMap
+    pageObjMap[pageObjId] = pageObj
     pageObjId++
 }
 
 // ----------------------- 加载外部js ----------------------------
 // 解决循环依赖问题
-const cloneObjMap = {}
+let cloneObjMap = new Map<any, any>()
+/** 深复制 增加了清除缓存的处理 */
+function deepClone(obj: any){
+    cleanCloneObjMap()
+    const result = _deepClone(obj)
+    cleanCloneObjMap()
+    return result
+}
 /** 深复制 */
-function deepClone(obj: any): any {
+function _deepClone(obj: any): any {
     if (!obj || typeof obj !== "object") { 
         return obj
     }
     const isArray = Array.isArray(obj)
-
     const clone: any = isArray ? [] : Object.assign({}, obj)
+    // 检查之前是否有映射关系存在
+    if(cloneObjMap.has(obj)){
+        return cloneObjMap.get(obj)
+    }
+    // 保存映射关系
+    cloneObjMap.set(obj, clone)
     if(isArray){
         for(let i=0; i<obj.length; i++){
-            obj[i] = deepClone(obj[i])
+            obj[i] = _deepClone(obj[i])
         }
     }else{
         Object.keys(clone).forEach((key: string) => {
             const value = obj[key]
-            clone[key] = deepClone(value)
-          },
-        )
+            clone[key] = _deepClone(value)
+        })
     }
     return clone
+}
+
+/**
+ * 清除原本的映射关系
+ */
+function cleanCloneObjMap(){
+    cloneObjMap = new Map<any, any>()
 }
   
 /**
@@ -307,7 +325,8 @@ loadJs("http://192.168.120.64:8091/js/logic/calculate.es5.js", ()=>{
     const pageObj = pageObjMap[currentPageObjId]
     console.log("当前的pageObj", pageObj);
     const pageInstance = deepClone(pageObj)
-    
+    console.log("pageInstance", pageInstance);
+    PageRun(pageInstance)
 })
 
 
